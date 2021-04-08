@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -69,5 +70,45 @@ public class SimpleListTests {
 		for(Integer i : result){
 			assertTrue(i % 2 == 0);
 		}
+	}
+
+	// Method from Task 1.4
+	@Test
+	void testAddDefault() throws Exception{
+		logger.info("Testing to add a new empty list element");
+		SimpleList<Person> inst = new SimpleListImpl<>();
+		inst.addDefault(Person.class);
+		assertEquals(1, inst.size());
+	}
+
+	@Test
+	void testSimpleListMap(){
+		logger.info("Testing default map method");
+		SimpleList<Integer> mapped = testList.map(i -> i + 1);
+		assertEquals(5, mapped.size()); // alle 5 Integers (2, 3, 4, 5, 6) wurden der neuen Liste hinzugefügt
+		for(Integer i : mapped) {
+			// Die Liste enthält nur Elemente zwischen 2 und 6 (da 1-5 jew. +1)
+			assertTrue(i > 1);
+			assertTrue(i < 7);
+		}
+	}
+
+	@Test
+	void testMap() {
+		logger.info("Testing default map method by mapping every value to its square");
+		SimpleList<Double> result = testList.map(i -> Math.pow(i, 2)); // Alle Werte werden Quadriert
+		Iterator<Integer> origIt = testList.iterator(); // 1, 2, 3, 4, 5
+		Iterator<Double> mapIt = result.iterator(); // 1, 4, 9, 16, 25
+		while (origIt.hasNext() && mapIt.hasNext()) {
+			assertEquals(Math.pow(origIt.next(), 2), mapIt.next(), 0.1);
+			// assertEquals(1, 4, 9, 16, 25; 1, 4, 9, 16, 25)
+		}
+	}
+
+	@Test
+	void testSimpleListMapChangedType() {
+		logger.info("Testing default map method by mapping every integer to a char value");
+		SimpleList<Character> mapped = testList.map(i -> ((char) (i + 64))); // 65,..., 69 = A, B, C, D, E
+		assertEquals(5, mapped.size());
 	}
 }

@@ -46,7 +46,7 @@ public class SimpleListImpl<T> implements SimpleList<T> {
 	 * @param filter SimpleFilter instance
 	 * @return new SimpleList instance
 	 */
-	public SimpleList<T> filter(SimpleFilter<T> filter){
+	/* SimpleList<T> filter(SimpleFilter<T> filter){
 		SimpleList<T> result = new SimpleListImpl<T>();
 
 		for(T o : this){
@@ -55,7 +55,7 @@ public class SimpleListImpl<T> implements SimpleList<T> {
 			}
 		}
 		return result;
-	}
+	}*/
 
 	/**
 	 * @inheritDoc
