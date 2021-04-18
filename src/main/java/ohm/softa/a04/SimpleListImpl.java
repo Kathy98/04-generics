@@ -60,8 +60,11 @@ public class SimpleListImpl<T> implements SimpleList<T> {
 	/**
 	 * @inheritDoc
 	 */
+	// Wenn Iterator nicht <T>, dann könnts nen Fehler zur Laufzeit geben.
+	// Funzt zwar aber müsste vilt casten -> Vorteil von generics geht verloren
 	@Override
 	public Iterator<T> iterator() {
+
 		return new SimpleIterator();
 	}
 
@@ -69,7 +72,11 @@ public class SimpleListImpl<T> implements SimpleList<T> {
 	 * Helper class which implements the Iterator interface
 	 * Has to be non static because otherwise it could not access the head of the list
 	 */
-	// Warum erbt die nicht-generische Klasse von einem generischen Interface?
+	// nicht static, weil man sonst nicht auf den Listenanfang (head) zugreifen könnte
+	// wenn nicht statisch, würde ich das T von oben kriegen, würde ichs statisch machen, würde T nicht von oben kommen
+	// hier würde es zur verschattung kommen nsollte ich SimpleIterator auch generisch machen. Könnte SimpleIterator<P> schreiben
+	// Es wär nicht klar, welche Typisierung (sollte ich Iterator nicht generisch sein)
+
 	private class SimpleIterator implements Iterator<T> {
 
 		private ListElement<T> current = head;
@@ -87,6 +94,10 @@ public class SimpleListImpl<T> implements SimpleList<T> {
 		 */
 		@Override
 		public T next() {
+			// Wo bin ich gerade in der ddatenstruktur? man soll immer davor sein
+			// Konzeptionell: return current.getItem();
+			// current = current.next;
+			// Will zuerst das element zurück geben vor dem ich steh und dann nen schritt weiter gehen
 			T tmp = current.getItem();
 			current = current.getNext();
 			return tmp;
@@ -98,6 +109,8 @@ public class SimpleListImpl<T> implements SimpleList<T> {
 	 * can be static because the ListElement does not need to access the SimpleList instance
 	 */
 	private static class ListElement<T> {
+		// dieses (private T item) T hat nix mit dem SimpleListImpl T zu tun.
+		// Wenn ListElement<P> wäre, müsste ich "private P item;" schreiben
 		private T item;
 		private ListElement<T> next;
 
@@ -128,5 +141,4 @@ public class SimpleListImpl<T> implements SimpleList<T> {
 			this.next = next;
 		}
 	}
-
 }

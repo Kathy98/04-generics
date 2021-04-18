@@ -3,6 +3,7 @@ package ohm.softa.a04;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
 
+// Iterable verwendet das generische Objekt von SimpleList (bindet das generische Obj. T)
 public interface SimpleList<T> extends Iterable<T> {
 	/**
 	 * Add a given object to the back of the list.
@@ -19,7 +20,9 @@ public interface SimpleList<T> extends Iterable<T> {
 	Hint: this method aims at the instantiation problem of generics.*/
 	// Bsp. T inst = new T(); -> geht nicht!!! Man muss die Typinfo zur Laufzeit bekommen
 	// addDefault wird später so aufgerufen: Instanz.addDefault(Klasse.class)
-	// Klasse.class wegen Eingabeparameter vom Typ Class<T>
+	// Klasse.class (Integer.class) wegen Eingabeparameter vom Typ Class<T>
+	// Bekomme mit Class<T> die Klasseninfo. Klasseninfo T ist zur Laufzeit  nicht verfügbar, deswegen muss ich die hier reinschmeißen
+	@SuppressWarnings("unchecked")
 	default void addDefault(Class<T> item) {
 		try {
 			this.add(item.getDeclaredConstructor().newInstance());
@@ -34,16 +37,18 @@ public interface SimpleList<T> extends Iterable<T> {
 	 * @return a new, filtered list
 	 * SimpleList<T> filter(SimpleFilter<T> filter);
 	 */
+	@SuppressWarnings("unchecked")
 	default SimpleList<T> filter(SimpleFilter<T> filter){
-		SimpleList<T> result;
+		SimpleList<T> result = new SimpleListImpl<>();
+		/*SimpleList<T> result;
 		try {
-			result = (SimpleList<T>) getClass().newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
+			result = (SimpleList<T>) getClass().getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 			result = new SimpleListImpl<>();
-		}
+		}*/
 
 		for(T o : this){
-			// Include-Methode: Ist Wert in Array enthalten? Ja - true / Nein - false
+			// Include-Methode: Ist Wert enthalten? Ja - true / Nein - false
 			if(filter.include(o)){
 				result.add(o);
 			}
@@ -55,11 +60,12 @@ public interface SimpleList<T> extends Iterable<T> {
 	 * 2.2
 	 */
 	// Siehe auch: https://mkyong.com/java8/java-8-function-examples (4. List -> List)
+	@SuppressWarnings("unchecked")
 	default <R> SimpleList<R> map(Function<T,R> transform){
 		SimpleList<R> result;
 		try {
-			result = (SimpleList<R>) getClass().newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
+			result = (SimpleList<R>) getClass().getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 			result = new SimpleListImpl<>();
 		}
 

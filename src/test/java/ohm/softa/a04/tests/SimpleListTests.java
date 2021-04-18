@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SimpleListTests {
 
 	private final Logger logger = LogManager.getLogger();
-	private SimpleList<Integer> testList;
+	private SimpleList<Integer> testList; // SimpleList<int> geht nicht, muss Objekt Integer verwenden (Rappertype oder so heißt das)
 
 	@BeforeEach
 	void setup(){
